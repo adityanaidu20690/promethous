@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.30.3
+    ports:
+      - 9000:9090
+    volumes:
+      - /apps/prometheus/configs/prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - prometheus:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+
+
+volumes:
+  prometheus:
