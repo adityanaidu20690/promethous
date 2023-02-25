@@ -1,15 +1,32 @@
 version: '3'
+networks:
+    prometheus_stack:
+      external: true
 
 services:
   prometheus:
-    image: prom/prometheus:v2.30.3
-    ports:
-      - 9000:9090
+    image: prom/prometheus:v2.42.0
+    container_name: prometheus
+    ports:  
+      - 9090:9090
+    command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
     volumes:
-      - /apps/prometheus/configs/prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus:/prometheus
-    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
-
-
+    networks:
+      - prometheus_stack
+  grafana:
+    image: grafana/grafana:9.3.6-ubuntu
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    networks:
+      - prometheus_stack
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - grafana-data:/var/lib/grafana
+      
 volumes:
+  grafana-data:
   prometheus:

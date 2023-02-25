@@ -1,0 +1,14 @@
+version: '3'
+networks:
+    prometheus_stack:
+      external: true
+services:
+  mysql-exporter:
+    image: prom/mysqld-exporter
+    container_name: mysqld-exporter
+    networks:
+      - prometheus_stack
+    environment:
+      - DATA_SOURCE_NAME=prom:admin123@(db:3306)/promstack
+    ports:
+      - "9104:9104"
